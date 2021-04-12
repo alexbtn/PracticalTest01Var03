@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">PracticalTest01Var03</string>
+    <string name="minus_text">-</string>
+    <string name="plus_text">+</string>
+    <string name="secondary_text">Navigate to secondary activity</string>
+</resources>
