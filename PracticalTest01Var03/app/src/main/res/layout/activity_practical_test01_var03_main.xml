@@ -10,7 +10,8 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/first_number"/>
+        android:id="@+id/first_number"
+        android:inputType="number"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -31,6 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/second_number"
+        android:inputType="number"
         android:layout_below="@+id/plus_button"/>
 
     <TextView

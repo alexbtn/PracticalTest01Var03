@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +18,7 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
 
     public static boolean isNumeric(String str) {
         try {
-            Double.parseDouble(str);
+            Integer.parseInt(str);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -29,11 +30,15 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            if (TextUtils.isEmpty(firstNumber.getText().toString()) || TextUtils.isEmpty(secondNumber.getText().toString()) ) {
+                Toast.makeText(getApplicationContext(), "One or both of the numbers are invalid !", Toast.LENGTH_LONG).show();
+                return;
+            }
             Integer firstValue = Integer.valueOf(firstNumber.getText().toString());
             Integer secondValue = Integer.valueOf(secondNumber.getText().toString());
             switch (v.getId()) {
                 case R.id.minus_button:
-                    if (isNumeric(firstNumber.getText().toString()) && isNumeric(secondNumber.getText().toString())) {
+                    if (firstNumber.getText().toString() != "" && secondNumber.getText().toString() != "") {
                         Integer resuult = firstValue - secondValue;
                         result.setText(firstNumber.getText().toString() + " - " + secondNumber.getText().toString() + " = " + resuult.toString());
                     } else {
@@ -41,7 +46,7 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
                     }
                     break;
                 case R.id.plus_button:
-                    if (isNumeric(firstNumber.getText().toString()) && isNumeric(secondNumber.getText().toString())) {
+                    if (firstNumber.getText().toString() != null && secondNumber.getText().toString() != null) {
                         Integer resuult = firstValue + secondValue;
                         result.setText(firstNumber.getText().toString() + " + " + secondNumber.getText().toString() + " = " + resuult.toString());
                     } else {
