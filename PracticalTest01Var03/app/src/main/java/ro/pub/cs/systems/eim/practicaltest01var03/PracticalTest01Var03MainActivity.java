@@ -2,6 +2,7 @@ package ro.pub.cs.systems.eim.practicaltest01var03;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -47,7 +48,11 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "One or both of the numbers are invalid !", Toast.LENGTH_LONG).show();
                     }
                     break;
-//                case R.id.go_to_secondary:
+                case R.id.go_to_secondary:
+                    Intent intent = new Intent(getApplicationContext(), PracticalTest01Var03SecondaryActivity.class);
+                    intent.putExtra("secondaryResult", result.getText().toString());
+                    startActivityForResult(intent, 7007);
+                    break;
             }
         }
     }
@@ -82,6 +87,14 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState.containsKey("firstNumber") && savedInstanceState.containsKey("secondNumber") && savedInstanceState.containsKey("result")) {
             Toast.makeText(getApplicationContext(), "The saved values are: " + savedInstanceState.getString("firstNumber") + " " + savedInstanceState.getString("secondNumber") + " " + savedInstanceState.getString("result"), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == 7007) {
+            Toast.makeText(this, "The activity returned with result " + resultCode, Toast.LENGTH_LONG).show();
         }
     }
 }
