@@ -2,9 +2,13 @@ package ro.pub.cs.systems.eim.practicaltest01var03;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +19,10 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
     private Button plusButton, minusButton, goToSecondary;
     private EditText firstNumber, secondNumber;
     private TextView result;
+
+    private int serviceStatus = -1;
+
+    private IntentFilter intentFilter = new IntentFilter();
 
     public static boolean isNumeric(String str) {
         try {
@@ -41,6 +49,13 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
                     if (firstNumber.getText().toString() != "" && secondNumber.getText().toString() != "") {
                         Integer resuult = firstValue - secondValue;
                         result.setText(firstNumber.getText().toString() + " - " + secondNumber.getText().toString() + " = " + resuult.toString());
+                        if (serviceStatus == -1) {
+                            Intent intent = new Intent(getApplicationContext(), PracticalTest01Var03Service.class);
+                            intent.putExtra("firstNumber", firstValue);
+                            intent.putExtra("secondNumber", secondValue);
+                            getApplicationContext().startService(intent);
+                            serviceStatus = 1;
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "One or both of the numbers are invalid !", Toast.LENGTH_LONG).show();
                     }
@@ -49,6 +64,13 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
                     if (firstNumber.getText().toString() != null && secondNumber.getText().toString() != null) {
                         Integer resuult = firstValue + secondValue;
                         result.setText(firstNumber.getText().toString() + " + " + secondNumber.getText().toString() + " = " + resuult.toString());
+                        if (serviceStatus == -1) {
+                            Intent intent = new Intent(getApplicationContext(), PracticalTest01Var03Service.class);
+                            intent.putExtra("firstNumber", firstValue);
+                            intent.putExtra("secondNumber", secondValue);
+                            getApplicationContext().startService(intent);
+                            serviceStatus = 1;
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "One or both of the numbers are invalid !", Toast.LENGTH_LONG).show();
                     }
@@ -59,6 +81,14 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
                     startActivityForResult(intent, 7007);
                     break;
             }
+        }
+    }
+
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("[Message]", intent.getStringExtra("broadCastExtra"));
         }
     }
 
@@ -78,6 +108,9 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
         plusButton.setOnClickListener(buttonClickListener);
         minusButton.setOnClickListener(buttonClickListener);
         goToSecondary.setOnClickListener(buttonClickListener);
+
+        intentFilter.addAction("ro.pub.cs.systems.eim.practicaltest01var03.sum");
+        intentFilter.addAction("ro.pub.cs.systems.eim.practicaltest01var03.diff");
     }
 
     @Override
@@ -101,5 +134,24 @@ public class PracticalTest01Var03MainActivity extends AppCompatActivity {
         if (requestCode == 7007) {
             Toast.makeText(this, "The activity returned with result " + resultCode, Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, PracticalTest01Var03Service.class);
+        stopService(intent);
+        super.onDestroy();
     }
 }
